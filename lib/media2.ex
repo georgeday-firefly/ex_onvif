@@ -396,6 +396,18 @@ defmodule ExOnvif.Media2 do
     |> ServiceCapabilities.to_struct()
   end
 
+  @doc """
+  Requests the device to generate a synchronization point (IDR keyframe) for the
+  stream associated with the given profile token.
+  """
+  @spec set_synchronization_point(ExOnvif.Device.t(), String.t()) :: :ok | {:error, any()}
+  def set_synchronization_point(device, profile_token) do
+    body =
+      element("tr2:SetSynchronizationPoint", element("tr2:ProfileToken", profile_token))
+
+    media2_request(device, "SetSynchronizationPoint", body, fn _body -> :ok end)
+  end
+
   defp parse_video_source_configurations_response(xml_response_body) do
     xml_response_body
     |> parse(namespace_conformant: true, quiet: true)

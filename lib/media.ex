@@ -448,6 +448,18 @@ defmodule ExOnvif.Media do
     |> AudioEncoderConfiguration.to_struct()
   end
 
+  @doc """
+  Requests the device to generate a synchronization point (IDR keyframe) for the
+  stream associated with the given profile token.
+  """
+  @spec set_synchronization_point(ExOnvif.Device.t(), String.t()) :: :ok | {:error, any()}
+  def set_synchronization_point(device, profile_token) do
+    body =
+      element(:"trt:SetSynchronizationPoint", element(:"trt:ProfileToken", profile_token))
+
+    media_request(device, "SetSynchronizationPoint", body, fn _body -> :ok end)
+  end
+
   defp parse_audio_encoder_configuration_options_response(xml_response_body) do
     xml_response_body
     |> parse(namespace_conformant: true, quiet: true)
